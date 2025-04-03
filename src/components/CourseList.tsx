@@ -16,12 +16,17 @@ type Course = {
 type CourseListProps = {
   searchTerm?: string;
   onShowCourseInfo: () => void;
+  setShowCourseInfo: (state: boolean) => void;
   onBackToList: () => void;
 };
 
 const COURSES_STORAGE_KEY = "mockCourses";
 
-const CourseList = ({ searchTerm = "" }: CourseListProps) => {
+const CourseList = ({
+  onShowCourseInfo,
+  setShowCourseInfo,
+  searchTerm = "",
+}: CourseListProps) => {
   const loadInitialCourses = () => {
     const savedCourses = localStorage.getItem(COURSES_STORAGE_KEY);
     if (savedCourses) {
@@ -50,10 +55,12 @@ const CourseList = ({ searchTerm = "" }: CourseListProps) => {
 
   const handleShowCourse = (course: Course) => {
     setSelectedCourse(course);
+    onShowCourseInfo();
   };
 
   const handleBackToList = () => {
     setSelectedCourse(null);
+    setShowCourseInfo(false);
   };
 
   const handleRestoreCourses = () => {

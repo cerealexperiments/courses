@@ -13,6 +13,8 @@ function App() {
     setSearchTerm("");
   };
 
+  console.log(showCourseInfo);
+
   return (
     <div className="flex flex-col min-h-screen">
       <Header />
@@ -27,6 +29,7 @@ function App() {
           <CourseList
             searchTerm={searchTerm}
             onShowCourseInfo={() => setShowCourseInfo(true)}
+            setShowCourseInfo={setShowCourseInfo}
             onBackToList={handleBackToList}
           />
         </div>

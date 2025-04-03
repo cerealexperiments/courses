@@ -1,14 +1,16 @@
+import { useState } from "react";
 import Button from "./Button";
 import { Search } from "lucide-react";
 
 type SearchBarProps = {
-  searchTerm: string;
   onSearch: (searchTerm: string) => void;
 };
 
-export const SearchBar = ({ searchTerm, onSearch }: SearchBarProps) => {
+export const SearchBar = ({ onSearch }: SearchBarProps) => {
+  const [inputValue, setInputValue] = useState("");
+
   const handleSearch = () => {
-    onSearch(searchTerm);
+    onSearch(inputValue);
   };
 
   return (
@@ -20,8 +22,8 @@ export const SearchBar = ({ searchTerm, onSearch }: SearchBarProps) => {
           </div>
           <input
             type="text"
-            value={searchTerm}
-            onChange={(e) => onSearch(e.target.value)}
+            value={inputValue}
+            onChange={(e) => setInputValue(e.target.value)} // Only update local state
             onKeyDown={(e) => e.key === "Enter" && handleSearch()}
             className="block pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm w-72"
             placeholder="Search courses..."
