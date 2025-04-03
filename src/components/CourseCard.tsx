@@ -39,11 +39,18 @@ const CourseCard = ({
       <div className="flex gap-12 pt-2">
         <p className="text-gray-800 text-sm">{description}</p>
         <div className="flex flex-col">
-          <div>
-            <p className="text-sm text-gray-800">
-              <span className="font-semibold">Authors: </span>
-              {authors.map((author) => author.name).join(", ")}
-            </p>
+          <div className="space-y-1">
+            {" "}
+            <div className="text-sm text-gray-800 flex items-baseline">
+              {" "}
+              <span className="font-semibold mr-1">Authors:</span>
+              <span
+                className="inline-block max-w-[200px] whitespace-nowrap overflow-hidden text-ellipsis align-middle"
+                title={authors.map((author) => author.name).join(", ")}
+              >
+                {authors.map((author) => author.name).join(", ")}
+              </span>
+            </div>
             <p className="text-sm text-gray-800">
               <span className="font-semibold">Duration: </span>
               {formatDuration(duration)} hours

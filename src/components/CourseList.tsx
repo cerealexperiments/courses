@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import CourseCard from "./CourseCard";
 import { CourseInfo } from "./CourseInfo";
 import { EmptyCoursesList } from "./EmptyCoursesList";
@@ -15,20 +15,32 @@ type Course = {
 
 type CourseListProps = {
   searchTerm?: string;
+  onShowCourseInfo: () => void;
+  onBackToList: () => void;
 };
 
-const formattedCourses = mockCurrentCoursesList.map((course) => {
-  const authorNames = course.authors.map((authorId) =>
-    mockedAuthorsList.find((author) => author.id === authorId),
-  ) as { name: string; id: string }[];
-  return { ...course, authors: authorNames };
-});
+const COURSES_STORAGE_KEY = "mockCourses";
 
 const CourseList = ({ searchTerm = "" }: CourseListProps) => {
-  const [originalCourses] = useState<Course[]>(formattedCourses);
+  const loadInitialCourses = () => {
+    const savedCourses = localStorage.getItem(COURSES_STORAGE_KEY);
+    if (savedCourses) {
+      return JSON.parse(savedCourses);
+    }
+    return mockCurrentCoursesList.map((course) => {
+      const authorNames = course.authors.map((authorId) =>
+        mockedAuthorsList.find((author) => author.id === authorId),
+      ) as { name: string; id: string }[];
+      return { ...course, authors: authorNames };
+    });
+  };
 
-  const [courses, setCourses] = useState<Course[]>(originalCourses);
+  const [courses, setCourses] = useState<Course[]>(loadInitialCourses);
   const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
+
+  useEffect(() => {
+    localStorage.setItem(COURSES_STORAGE_KEY, JSON.stringify(courses));
+  }, [courses]);
 
   const handleDeleteCourse = (courseId: string) => {
     setCourses((prevCourses) =>
@@ -45,7 +57,14 @@ const CourseList = ({ searchTerm = "" }: CourseListProps) => {
   };
 
   const handleRestoreCourses = () => {
-    setCourses(originalCourses);
+    const initialCourses = mockCurrentCoursesList.map((course) => {
+      const authorNames = course.authors.map((authorId) =>
+        mockedAuthorsList.find((author) => author.id === authorId),
+      ) as { name: string; id: string }[];
+      return { ...course, authors: authorNames };
+    });
+    setCourses(initialCourses);
+    localStorage.setItem(COURSES_STORAGE_KEY, JSON.stringify(initialCourses));
   };
 
   const filteredCourses = courses.filter((course) => {

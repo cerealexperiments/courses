@@ -1,5 +1,4 @@
 import Button from "./Button";
-import { ArrowLeft } from "lucide-react";
 
 type CourseInfoProps = {
   course: {
@@ -24,9 +23,7 @@ export const CourseInfo = ({ course, onBack }: CourseInfoProps) => {
 
   return (
     <div className="shadow-lg border-gray-200 border bg-white p-6">
-      <Button onClick={onBack}>
-        <ArrowLeft size={18} className="mr-2" /> Back to courses
-      </Button>
+      <Button onClick={onBack}>Back to courses</Button>
 
       <h1 className="text-2xl font-bold text-gray-800 mb-4 pt-4">
         {course.title}
@@ -39,6 +36,10 @@ export const CourseInfo = ({ course, onBack }: CourseInfoProps) => {
         </div>
 
         <div className="space-y-4">
+          <div>
+            <h3 className="font-semibold">ID:</h3>
+            <p>{course.id}</p>
+          </div>
           <div>
             <h3 className="font-semibold">Duration:</h3>
             <p>{formatDuration(course.duration)}</p>
