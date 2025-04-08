@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { useForm } from "react-hook-form";
+import { useAuth } from "../context/AuthContext";
 
 const loginUser = async (username: string, password: string) => {
   try {
@@ -40,6 +41,7 @@ const LoginPage = () => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const [loginError, setLoginError] = useState("");
+  const { login } = useAuth()!;
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -54,7 +56,7 @@ const LoginPage = () => {
 
     try {
       const response = await loginUser(data.username, data.password);
-      localStorage.setItem("token", response.token);
+      login(data.username, response.token);
       navigate("/courses");
     } catch (error) {
       setLoginError(

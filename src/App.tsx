@@ -3,18 +3,21 @@ import MainLayout from "./components/MainLayout";
 import CoursesPage from "./pages/Courses";
 import LoginPage from "./pages/Login";
 import ProtectedRoute from "./components/ProtectedRoute";
+import { AuthProvider } from "./context/AuthProvider";
 
 function App() {
   return (
-    <Routes>
-      <Route element={<MainLayout />}>
-        <Route path="/login" element={<LoginPage />} />
-        <Route element={<ProtectedRoute />}>
-          <Route path="/courses" element={<CoursesPage />} />
-          <Route path="/" element={<Navigate to="/courses" replace />} />
+    <AuthProvider>
+      <Routes>
+        <Route element={<MainLayout />}>
+          <Route path="/login" element={<LoginPage />} />
+          <Route element={<ProtectedRoute />}>
+            <Route path="/courses" element={<CoursesPage />} />
+            <Route path="/" element={<Navigate to="/courses" replace />} />
+          </Route>
         </Route>
-      </Route>
-    </Routes>
+      </Routes>
+    </AuthProvider>
   );
 }
 
