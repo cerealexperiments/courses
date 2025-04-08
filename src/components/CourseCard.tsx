@@ -1,8 +1,10 @@
+import { useEffect, useState } from "react";
 import Button from "./Button";
 import { Trash2 } from "lucide-react";
 import { Pencil } from "lucide-react";
-import { Course } from "../types";
+import { Author, Course } from "../types";
 import { useNavigate } from "react-router";
+import axios from "axios";
 
 type CourseCardProps = Course & {
   onDelete: () => void;
@@ -23,8 +25,29 @@ const CourseCard = ({
   creationDate,
   onDelete,
 }: CourseCardProps) => {
+  const [authorNames, setAuthorNames] = useState<string[]>([]);
+  const [isAuthorsLoading, setisAuthorsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchAuthors = async (): Promise<void> => {
+      setisAuthorsLoading(true);
+      const authorsPromises = authors.map((author) =>
+        axios
+          .get<Author>(
+            `https://67f47ff6cbef97f40d2e5f26.mockapi.io/authors/${author}`,
+          )
+          .then((response) => response.data),
+      );
+      const authorsResponse = await Promise.all(authorsPromises);
+      setAuthorNames(authorsResponse.map((author) => author.name));
+      setisAuthorsLoading(false);
+    };
+    fetchAuthors();
+  }, [authors]);
+
   const formattedCreationDate = creationDate.replace(/\//g, ".");
   const navigate = useNavigate();
+  console.log("authorNames: ", authorNames);
 
   return (
     <div className="shadow-lg border-gray-200 border bg-white py-6 px-3">
@@ -34,16 +57,20 @@ const CourseCard = ({
         <div className="flex flex-col ml-auto">
           <div className="space-y-1">
             {" "}
-            <div className="text-sm text-gray-800 flex items-baseline">
-              {" "}
-              <span className="font-semibold mr-1">Authors:</span>
-              <span
-                className="inline-block max-w-[200px] whitespace-nowrap overflow-hidden text-ellipsis align-middle"
-                title={authors.map((author) => author).join(", ")}
-              >
-                {authors.map((author) => author).join(", ")}
-              </span>
-            </div>
+            {isAuthorsLoading ? (
+              "..."
+            ) : (
+              <div className="text-sm text-gray-800 flex items-baseline">
+                {" "}
+                <span className="font-semibold mr-1">Authors:</span>
+                <span
+                  className="inline-block max-w-[200px] whitespace-nowrap overflow-hidden text-ellipsis align-middle"
+                  title={authorNames.map((author) => author).join(", ")}
+                >
+                  {authorNames.map((author) => author).join(", ")}
+                </span>
+              </div>
+            )}
             <p className="text-sm text-gray-800">
               <span className="font-semibold">Duration: </span>
               {formatDuration(duration)} hours

@@ -1,6 +1,7 @@
 import CourseCard from "./CourseCard";
 import { EmptyCoursesList } from "./EmptyCoursesList";
 import { Course } from "../types";
+import { useNavigate } from "react-router";
 
 type CourseListProps = {
   courses: Course[];
@@ -11,6 +12,7 @@ type CourseListProps = {
 };
 
 const CourseList = ({ courses, searchTerm = "" }: CourseListProps) => {
+  const navigate = useNavigate();
   const filteredCourses = courses.filter((course) => {
     const lowerSearchTerm = searchTerm.toLowerCase();
     return (
@@ -20,9 +22,7 @@ const CourseList = ({ courses, searchTerm = "" }: CourseListProps) => {
   });
 
   if (courses.length === 0) {
-    return (
-      <EmptyCoursesList onAddNewCourse={() => console.log("change later")} />
-    );
+    return <EmptyCoursesList onAddNewCourse={() => navigate("/courses/add")} />;
   }
 
   if (filteredCourses.length === 0) {

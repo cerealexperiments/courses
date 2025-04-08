@@ -19,6 +19,7 @@ const AddCoursePage = () => {
   const navigate = useNavigate();
   const [allAuthors, setAllAuthors] = useState<Author[]>([]);
   const [courseAuthors, setCourseAuthors] = useState<Author[]>([]);
+  const [isCreatingAuthor, setIsCreatingAuthor] = useState(false);
 
   const {
     register,
@@ -36,20 +37,19 @@ const AddCoursePage = () => {
     },
   });
 
-  // Fetch initial authors
-  useEffect(() => {
-    const fetchAuthors = async () => {
-      try {
-        const response = await fetch(
-          "https://67f47ff6cbef97f40d2e5f26.mockapi.io/authors",
-        );
-        const data = await response.json();
-        setAllAuthors(data);
-      } catch (error) {
-        console.error("Error fetching authors:", error);
-      }
-    };
+  const fetchAuthors = async () => {
+    try {
+      const response = await fetch(
+        "https://67f47ff6cbef97f40d2e5f26.mockapi.io/authors",
+      );
+      const data = await response.json();
+      setAllAuthors(data);
+    } catch (error) {
+      console.error("Error fetching authors:", error);
+    }
+  };
 
+  useEffect(() => {
     fetchAuthors();
   }, []);
 
@@ -63,15 +63,35 @@ const AddCoursePage = () => {
     setAllAuthors((prev) => [...prev, author]);
   };
 
-  const handleCreateAuthor = () => {
+  const handleCreateAuthor = async () => {
     const newAuthorName = watch("newAuthor");
     if (newAuthorName.length >= 2) {
-      const newAuthor = {
-        id: Date.now().toString(),
-        name: newAuthorName,
-      };
-      setAllAuthors((prev) => [...prev, newAuthor]);
-      setValue("newAuthor", "");
+      setIsCreatingAuthor(true);
+      try {
+        const response = await fetch(
+          "https://67f47ff6cbef97f40d2e5f26.mockapi.io/authors",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ name: newAuthorName }),
+          },
+        );
+
+        if (response.ok) {
+          const newAuthor = await response.json();
+
+          setAllAuthors((prev) => [...prev, newAuthor]);
+          setValue("newAuthor", "");
+        } else {
+          console.error("Failed to create author");
+        }
+      } catch (error) {
+        console.error("Error creating author:", error);
+      } finally {
+        setIsCreatingAuthor(false);
+      }
     }
   };
 
@@ -91,7 +111,7 @@ const AddCoursePage = () => {
       description: data.description,
       duration: parseInt(data.duration),
       creationDate: new Date().toLocaleDateString(),
-      authors: courseAuthors.map((a) => a.name),
+      authors: courseAuthors.map((a) => a.id),
     };
 
     try {
@@ -120,7 +140,6 @@ const AddCoursePage = () => {
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* Title Field */}
           <div>
             <label
               htmlFor="title"
@@ -149,7 +168,6 @@ const AddCoursePage = () => {
             )}
           </div>
 
-          {/* Duration Field */}
           <div>
             <label
               htmlFor="duration"
@@ -177,7 +195,6 @@ const AddCoursePage = () => {
                   }`}
                   placeholder="Duration in minutes"
                   onChange={(e) => {
-                    // Only allow numbers
                     if (
                       e.target.value === "" ||
                       /^[0-9\b]+$/.test(e.target.value)
@@ -201,7 +218,6 @@ const AddCoursePage = () => {
           </div>
         </div>
 
-        {/* Description Field */}
         <div>
           <label
             htmlFor="description"
@@ -231,9 +247,7 @@ const AddCoursePage = () => {
           )}
         </div>
 
-        {/* Authors Section */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* Available Authors */}
           <div className="border p-4 rounded-md">
             <h2 className="text-lg font-semibold mb-4">Authors</h2>
             {allAuthors.length > 0 ? (
@@ -258,7 +272,6 @@ const AddCoursePage = () => {
               <p className="text-gray-500">No authors available</p>
             )}
 
-            {/* Add New Author */}
             <div className="mt-6">
               <h3 className="text-md font-medium mb-2">Add New Author</h3>
               <div className="flex gap-2">
@@ -278,9 +291,14 @@ const AddCoursePage = () => {
                 <Button
                   type="button"
                   onClick={handleCreateAuthor}
-                  className="bg-green-600 hover:bg-green-700 text-white py-2 px-4"
+                  disabled={isCreatingAuthor}
+                  className={`${
+                    isCreatingAuthor
+                      ? "bg-green-400"
+                      : "bg-green-600 hover:bg-green-700"
+                  } text-white py-2 px-4`}
                 >
-                  Create
+                  {isCreatingAuthor ? "Creating..." : "Create"}
                 </Button>
               </div>
               {errors.newAuthor && (
@@ -291,7 +309,6 @@ const AddCoursePage = () => {
             </div>
           </div>
 
-          {/* Course Authors */}
           <div className="border p-4 rounded-md">
             <h2 className="text-lg font-semibold mb-4">Course Authors</h2>
             {courseAuthors.length > 0 ? (
@@ -323,7 +340,6 @@ const AddCoursePage = () => {
           </div>
         </div>
 
-        {/* Submit Button */}
         <div className="flex justify-end gap-4">
           <Button
             type="button"

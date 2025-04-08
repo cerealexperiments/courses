@@ -1,7 +1,8 @@
 import Button from "../components/Button";
 import { useParams, useNavigate } from "react-router";
-import { Course } from "../types";
+import { Course, Author } from "../types";
 import { useEffect, useState } from "react";
+import axios from "axios";
 
 const formatDuration = (totalMinutes: number) => {
   const hours = Math.floor(totalMinutes / 60);
@@ -15,7 +16,7 @@ const SkeletonLoader = () => (
       <Button disabled>Back to courses</Button>
 
       <h1 className="text-2xl font-bold text-gray-800 mb-4 pt-4">
-        <div className="h-4 bg-gray-200 rounded w-3/4 animate-pulse"></div>
+        <div className="h-8 bg-gray-200 rounded w-3/4 animate-pulse"></div>
       </h1>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -47,7 +48,9 @@ export const CourseInfoPage = () => {
   const { courseId } = useParams();
   const navigate = useNavigate();
   const [course, setCourse] = useState<Course | null>(null);
+  const [authors, setAuthors] = useState<Author[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isAuthorsLoading, setIsAuthorsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   const onBack = () => {
@@ -60,27 +63,49 @@ export const CourseInfoPage = () => {
         setIsLoading(true);
         setError(null);
 
-        const response = await fetch(
+        const response = await axios.get<Course>(
           `https://67f47ff6cbef97f40d2e5f26.mockapi.io/courses/${courseId}`,
         );
 
-        if (!response.ok) {
-          throw new Error("Failed to fetch course data");
-        }
-
-        const data = await response.json();
-        setCourse(data);
+        setCourse(response.data);
+        return response.data.authors;
       } catch (err) {
         setError(
           err instanceof Error ? err.message : "An unknown error occurred",
         );
+        return [];
       } finally {
         setIsLoading(false);
       }
     };
 
+    const fetchAuthors = async (authorIds: string[]) => {
+      try {
+        setIsAuthorsLoading(true);
+        const authorsPromises = authorIds.map((authorId) =>
+          axios
+            .get<Author>(
+              `https://67f47ff6cbef97f40d2e5f26.mockapi.io/authors/${authorId}`,
+            )
+            .then((response) => response.data),
+        );
+        const authorsData = await Promise.all(authorsPromises);
+        setAuthors(authorsData);
+      } catch (err) {
+        console.error("Error fetching authors:", err);
+      } finally {
+        setIsAuthorsLoading(false);
+      }
+    };
+
     if (courseId) {
-      fetchCourse();
+      fetchCourse().then((authorIds) => {
+        if (authorIds && authorIds.length > 0) {
+          fetchAuthors(authorIds);
+        } else {
+          setIsAuthorsLoading(false);
+        }
+      });
     }
   }, [courseId]);
 
@@ -143,11 +168,22 @@ export const CourseInfoPage = () => {
 
               <div>
                 <h3 className="font-semibold">Authors:</h3>
-                <ul className="list-disc pl-5">
-                  {course?.authors.map((author) => (
-                    <li key={author}>{author}</li>
-                  ))}
-                </ul>
+                {isAuthorsLoading ? (
+                  <div className="space-y-2">
+                    {course?.authors.map((_, index) => (
+                      <div
+                        key={index}
+                        className="h-4 bg-gray-200 rounded animate-pulse w-3/4"
+                      ></div>
+                    ))}
+                  </div>
+                ) : (
+                  <ul className="list-disc pl-5">
+                    {authors.map((author) => (
+                      <li key={author.id}>{author.name}</li>
+                    ))}
+                  </ul>
+                )}
               </div>
             </div>
           </div>
