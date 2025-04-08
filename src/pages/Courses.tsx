@@ -3,7 +3,7 @@ import CourseList from "../components/CourseList";
 import { SearchBar } from "../components/SearchBar";
 import Button from "../components/Button";
 
-function HomePage() {
+function CoursesPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [showCourseInfo, setShowCourseInfo] = useState(false);
 
@@ -32,4 +32,4 @@ function HomePage() {
   );
 }
 
-export default HomePage;
+export default CoursesPage;
