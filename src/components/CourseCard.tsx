@@ -31,7 +31,7 @@ const CourseCard = ({
       <p className="text-lg font-bold text-gray-800">{title}</p>
       <div className="flex gap-12 pt-2">
         <p className="text-gray-800 text-sm">{description}</p>
-        <div className="flex flex-col">
+        <div className="flex flex-col ml-auto">
           <div className="space-y-1">
             {" "}
             <div className="text-sm text-gray-800 flex items-baseline">

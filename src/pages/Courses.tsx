@@ -4,6 +4,7 @@ import CourseList from "../components/CourseList";
 import { SearchBar } from "../components/SearchBar";
 import Button from "../components/Button";
 import { Course } from "../types";
+import { useNavigate } from "react-router";
 
 function CoursesPage() {
   const [searchTerm, setSearchTerm] = useState<string>("");
@@ -11,6 +12,7 @@ function CoursesPage() {
   const [courses, setCourses] = useState<Course[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchCourses();
@@ -45,7 +47,9 @@ function CoursesPage() {
       {!showCourseInfo && (
         <div className="flex justify-between items-center mb-8">
           <SearchBar searchTerm={searchTerm} onSearch={setSearchTerm} />
-          <Button>Add new course</Button>
+          <Button onClick={() => navigate("/courses/add")}>
+            Add new course
+          </Button>
         </div>
       )}
 
