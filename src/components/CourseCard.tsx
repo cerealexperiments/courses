@@ -2,10 +2,10 @@ import Button from "./Button";
 import { Trash2 } from "lucide-react";
 import { Pencil } from "lucide-react";
 import { Course } from "../types";
+import { useNavigate } from "react-router";
 
 type CourseCardProps = Course & {
   onDelete: () => void;
-  onShowCourse: () => void;
 };
 
 const formatDuration = (totalMinutes: number) => {
@@ -15,15 +15,16 @@ const formatDuration = (totalMinutes: number) => {
 };
 
 const CourseCard = ({
+  id,
   title,
   description,
   authors,
   duration,
   creationDate,
   onDelete,
-  onShowCourse,
 }: CourseCardProps) => {
   const formattedCreationDate = creationDate.replace(/\//g, ".");
+  const navigate = useNavigate();
 
   return (
     <div className="shadow-lg border-gray-200 border bg-white py-6 px-3">
@@ -53,7 +54,9 @@ const CourseCard = ({
             </p>
           </div>
           <div className="flex items-center mt-auto pt-4 w-full gap-2">
-            <Button onClick={onShowCourse}>Show Course</Button>
+            <Button onClick={() => navigate(`/courses/${id}`)}>
+              Show Course
+            </Button>
             <Button onClick={onDelete}>
               <Trash2 color="white" size={20} />
             </Button>

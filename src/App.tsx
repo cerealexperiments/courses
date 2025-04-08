@@ -4,6 +4,7 @@ import CoursesPage from "./pages/Courses";
 import LoginPage from "./pages/Login";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { AuthProvider } from "./context/AuthProvider";
+import { CourseInfoPage } from "./pages/CourseInfoPage";
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
           <Route path="/login" element={<LoginPage />} />
           <Route element={<ProtectedRoute />}>
             <Route path="/courses" element={<CoursesPage />} />
+            <Route path="/courses/:courseId" element={<CourseInfoPage />} />
             <Route path="/" element={<Navigate to="/courses" replace />} />
           </Route>
         </Route>
