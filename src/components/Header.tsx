@@ -1,6 +1,7 @@
 import Button from "./Button";
 import logo from "../assets/logo.svg";
 import { useAuth } from "../context/AuthContext";
+import { Link } from "react-router";
 
 const Header = () => {
   const { user, logout } = useAuth()!;
@@ -8,7 +9,9 @@ const Header = () => {
   return (
     <header className="border-b-gray-300 border-b">
       <div className="flex max-w-6xl mx-auto justify-between items-center py-2">
-        <img src={logo} alt="Courses logo" />
+        <Link to="/">
+          <img src={logo} alt="Courses logo" />
+        </Link>
         {user && (
           <div className="flex items-center gap-4">
             <p className="font-semibold text-gray-800">{user}</p>

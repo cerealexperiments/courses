@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { useForm } from "react-hook-form";
 import { useAuth } from "../context/AuthContext";
+import Button from "../components/Button";
 
 const loginUser = async (username: string, password: string) => {
   try {
@@ -96,7 +97,7 @@ const LoginPage = () => {
               Username
             </label>
             <input
-              placeholder="iwakuralain"
+              placeholder="emilys"
               id="username"
               {...register("username", {
                 required: "Username is required",
@@ -134,6 +135,8 @@ const LoginPage = () => {
                 errors.password ? "border-red-500" : "border-gray-300"
               } rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500`}
             />
+
+            <p className="mt-1 text-sm text-gray-500">Hint: emilyspass</p>
             {errors.password && (
               <p className="mt-1 text-sm text-red-600">
                 {errors.password.message}
@@ -142,13 +145,9 @@ const LoginPage = () => {
           </div>
 
           <div>
-            <button
-              type="submit"
-              disabled={isLoading}
-              className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:bg-indigo-400"
-            >
+            <Button type="submit" disabled={isLoading} className="w-full">
               {isLoading ? "Logging in..." : "Log in"}
-            </button>
+            </Button>
           </div>
         </form>
       </div>
