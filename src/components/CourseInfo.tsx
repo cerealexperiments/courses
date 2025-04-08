@@ -1,14 +1,8 @@
 import Button from "./Button";
+import { Course } from "../types";
 
 type CourseInfoProps = {
-  course: {
-    id: string;
-    title: string;
-    description: string;
-    authors: { id: string; name: string }[];
-    duration: number;
-    creationDate: string;
-  };
+  course: Course;
   onBack: () => void;
 };
 
@@ -54,7 +48,7 @@ export const CourseInfo = ({ course, onBack }: CourseInfoProps) => {
             <h3 className="font-semibold">Authors:</h3>
             <ul className="list-disc pl-5">
               {course.authors.map((author) => (
-                <li key={author.id}>{author.name}</li>
+                <li key={author}>{author}</li>
               ))}
             </ul>
           </div>

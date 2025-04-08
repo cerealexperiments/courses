@@ -1,17 +1,9 @@
 import Button from "./Button";
 import { Trash2 } from "lucide-react";
 import { Pencil } from "lucide-react";
+import { Course } from "../types";
 
-type CourseCardProps = {
-  id: string;
-  title: string;
-  description: string;
-  authors: {
-    id: string;
-    name: string;
-  }[];
-  duration: number;
-  creationDate: string;
+type CourseCardProps = Course & {
   onDelete: () => void;
   onShowCourse: () => void;
 };
@@ -46,9 +38,9 @@ const CourseCard = ({
               <span className="font-semibold mr-1">Authors:</span>
               <span
                 className="inline-block max-w-[200px] whitespace-nowrap overflow-hidden text-ellipsis align-middle"
-                title={authors.map((author) => author.name).join(", ")}
+                title={authors.map((author) => author).join(", ")}
               >
-                {authors.map((author) => author.name).join(", ")}
+                {authors.map((author) => author).join(", ")}
               </span>
             </div>
             <p className="text-sm text-gray-800">
