@@ -57,7 +57,7 @@ const LoginPage = () => {
 
     try {
       const response = await loginUser(data.username, data.password);
-      login(data.username, response.token);
+      login(data.username, response.accessToken);
       navigate("/courses");
     } catch (error) {
       setLoginError(

@@ -248,7 +248,7 @@ const AddCoursePage = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="border p-4 rounded-md">
+          <div className="border border-gray-300 p-4 rounded-md">
             <h2 className="text-lg font-semibold mb-4">Authors</h2>
             {allAuthors.length > 0 ? (
               <ul className="space-y-2">
@@ -309,7 +309,7 @@ const AddCoursePage = () => {
             </div>
           </div>
 
-          <div className="border p-4 rounded-md">
+          <div className="border border-gray-300 p-4 rounded-md">
             <h2 className="text-lg font-semibold mb-4">Course Authors</h2>
             {courseAuthors.length > 0 ? (
               <ul className="space-y-2">
