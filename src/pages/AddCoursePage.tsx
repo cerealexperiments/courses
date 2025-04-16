@@ -290,7 +290,10 @@ const AddCoursePage = () => {
                 />
                 <Button
                   type="button"
-                  onClick={handleCreateAuthor}
+                  onClick={(event) => {
+                    event.preventDefault();
+                    handleCreateAuthor();
+                  }}
                   disabled={isCreatingAuthor}
                   className={`${
                     isCreatingAuthor
